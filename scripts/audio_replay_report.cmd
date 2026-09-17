@@ -1,0 +1,2 @@
+@echo off
+powershell.exe -NoProfile -Command "& { $root=(Resolve-Path '%~dp0..').Path; $path=Join-Path $root 'reports\audio_replay_v1\SCUT_AUDIO_REPLAY_V1_RESULTS.json'; if (!(Test-Path -LiteralPath $path)) { Write-Host 'No completed Audio Replay report yet.'; exit 1 }; $r=Get-Content -LiteralPath $path -Raw | ConvertFrom-Json; Write-Host 'SCUT AUDIO REPLAY V1'; Write-Host ('Run: '+$r.run_id); $r.metrics | ConvertTo-Json -Depth 5; Write-Host ('JSON: '+$path); Write-Host ('Markdown: '+(Join-Path $root 'reports\audio_replay_v1\SCUT_AUDIO_REPLAY_V1_REPORT.md')) }"

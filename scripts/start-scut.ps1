@@ -1,0 +1,8 @@
+$ErrorActionPreference='Stop';$root=Split-Path -Parent $PSScriptRoot;$py=Join-Path $root '.local\venv\Scripts\python.exe';$local=Join-Path $root '.local';$logs=Join-Path $root 'logs'
+if(-not(Test-Path $py)){Write-Host 'SCUT has not completed FIRST_RUN. Starting bootstrap…';& (Join-Path $root 'FIRST_RUN.bat');exit $LASTEXITCODE}
+if(-not(Test-Path (Join-Path $root 'dist\SCUT.apk'))){throw 'dist\SCUT.apk is missing. Run BUILD_ANDROID.bat before the demo.'}
+$machine=if(Test-Path (Join-Path $local 'machine.json')){Get-Content (Join-Path $local 'machine.json') -Raw|ConvertFrom-Json}else{$null};$port=if($machine.port){[int]$machine.port}else{8765}
+if(-not $machine.whisper -or $machine.whisper.selfTest -ne 'PASS'){throw 'Whisper is not ready. Run FIRST_RUN.bat before the demo; START_SCUT will not download models.'}
+$listening=Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue;if($listening){Write-Host "SCUT or another app is already listening on $port. Open http://127.0.0.1:$port";Start-Process "http://127.0.0.1:$port";exit 0}
+New-Item -ItemType Directory -Force -Path $logs|Out-Null;$out=Join-Path $logs 'server.out.log';$err=Join-Path $logs 'server.err.log';$p=Start-Process -FilePath $py -ArgumentList "`"$root\backend\server.py`" --port $port" -WorkingDirectory $root -RedirectStandardOutput $out -RedirectStandardError $err -PassThru
+@{pid=$p.Id;port=$port;started=(Get-Date).ToString('o')}|ConvertTo-Json|Set-Content (Join-Path $local 'server.json');Start-Sleep -Milliseconds 900;Start-Process "http://127.0.0.1:$port";Write-Host "SCUT started on port $port (PID $($p.Id))."
