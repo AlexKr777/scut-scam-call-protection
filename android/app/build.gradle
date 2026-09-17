@@ -1,0 +1,17 @@
+plugins { id 'com.android.application' }
+
+android { namespace 'org.scut.app'; compileSdk 36
+    defaultConfig { applicationId 'org.scut.app'; minSdk 26; targetSdk 35; versionCode 1; versionName '1.0.0' }
+}
+
+dependencies {
+    implementation platform('com.google.firebase:firebase-bom:34.18.0')
+    implementation 'com.google.firebase:firebase-messaging'
+}
+
+// A real Firebase project is provisioned per deployment and is intentionally
+// absent from source control. Applying this only when its generated file is
+// present keeps unconfigured builds truthful rather than inventing options.
+if (file('google-services.json').exists()) {
+    apply plugin: 'com.google.gms.google-services'
+}
