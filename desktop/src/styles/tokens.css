@@ -1,0 +1,32 @@
+:root {
+  color: #1e211b;
+  background: #f4f1e7;
+  font-family: 'Instrument Sans', 'Segoe UI Variable Text', 'Segoe UI', sans-serif;
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+
+  --canvas: #f4f1e7;
+  --raised-paper: #faf8f2;
+  --sidebar: #ece7da;
+  --stone: #ded7c8;
+  --stone-soft: #e5dfd2;
+  --deep-beige: #8a7a66;
+  --ink: #1e211b;
+  --muted-ink: #6d6b62;
+  --quiet-ink: #858176;
+  --green: #1d6f49;
+  --soft-green: #bfd6b8;
+  --voice-lilac: #9a83d8;
+  --voice-lilac-soft: #ddd2ef;
+  --amber: #c69032;
+  --rust: #a64c41;
+
+  --titlebar-height: 44px;
+  --sidebar-width: 188px;
+  --radius-small: 8px;
+  --radius-medium: 12px;
+  --radius-large: 18px;
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
+}

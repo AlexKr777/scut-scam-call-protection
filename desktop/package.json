@@ -1,0 +1,99 @@
+{
+  "name": "scut-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SCUT premium Windows desktop shell",
+  "type": "module",
+  "main": "dist-electron/electron/main.js",
+  "scripts": {
+    "dev": "npm run build:electron && concurrently -k \"vite --host 127.0.0.1\" \"wait-on tcp:5173 && node scripts/electron-launch.mjs --dev\"",
+    "build": "npm run typecheck && npm run build:electron && vite build",
+    "build:electron": "tsc -p tsconfig.node.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.node.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "start": "npm run build && node scripts/electron-launch.mjs",
+    "package:win": "npm run build && electron-builder --win nsis",
+    "capture:gate-a:1440": "npm run build && node scripts/electron-launch.mjs --capture-output=../docs/gate-a/SCUT_GATE_A_1440x900.png --capture-width=1440 --capture-height=900 --capture-scale=1",
+    "capture:gate-a:125": "npm run build && node scripts/electron-launch.mjs --capture-output=../docs/gate-a/SCUT_GATE_A_1920x1080_125pct.png --capture-width=1536 --capture-height=864 --capture-scale=1.25"
+  },
+  "build": {
+    "appId": "org.scut.desktop",
+    "productName": "SCUT",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**",
+      "dist-electron/**",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../backend",
+        "to": "scut-runtime/backend",
+        "filter": [
+          "**/*",
+          "!__pycache__/**"
+        ]
+      },
+      {
+        "from": "../frontend",
+        "to": "scut-runtime/frontend"
+      },
+      {
+        "from": "../.local/runtime",
+        "to": "scut-runtime/runtime"
+      },
+      {
+        "from": "../output/hybrid_v1/NOMIC_DEPLOYMENT_V1",
+        "to": "scut-runtime/output/hybrid_v1/NOMIC_DEPLOYMENT_V1"
+      },
+      {
+        "from": "../scripts",
+        "to": "scut-runtime/scripts",
+        "filter": [
+          "championship_backbones.py",
+          "tail_aware_encoder.py"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "SCUT Setup ${version}.${ext}",
+      "icon": "build/icon.png",
+      "signExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "dependencies": {
+    "@fontsource/bitter": "5.3.0",
+    "@fontsource/instrument-sans": "5.3.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.7",
+    "@types/node": "26.5.0",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "@vitejs/plugin-react": "6.1.1",
+    "concurrently": "10.0.5",
+    "electron": "44.2.0",
+    "electron-builder": "^26.15.3",
+    "jsdom": "30.0.1",
+    "typescript": "7.0.2",
+    "vite": "8.2.2",
+    "vitest": "5.0.0",
+    "wait-on": "9.1.0"
+  }
+}

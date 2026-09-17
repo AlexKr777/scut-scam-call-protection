@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101819"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%2314211f'/%3E%3Cpath d='M8 2l5 2v3c0 3-2 5-5 7C5 12 3 10 3 7V4z' fill='%238adf9b'/%3E%3C/svg%3E"><title>SCUT Control Center</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div><p class="eyebrow">SCAM-CALL UTILITY TOOL</p><h1>SCUT <span>Control Center</span></h1></div>
+      <div class="connection"><i id="socket-dot"></i><span id="socket-label">CONNECTING</span></div>
+    </header>
+    <section class="hero" aria-labelledby="protection-heading">
+      <div><p class="eyebrow">PROTECTION STATE</p><h2 id="protection-heading" data-risk="SAFE"><span id="risk-dot" class="risk-dot"></span><span id="risk">SAFE</span></h2><p id="risk-reason">Loading runtime state…</p></div>
+      <div class="mode-buttons" role="group" aria-label="Protection mode">
+        <button data-mode="OFF">Off</button><button data-mode="TEST">Test</button><button data-mode="PROTECT" class="strong">Protect</button>
+      </div>
+    </section>
+    <section class="grid status-grid" aria-label="Live status">
+      <article><h2>Machine</h2><dl><dt>Windows</dt><dd id="windows">—</dd><dt>Bluetooth</dt><dd id="bluetooth">—</dd><dt>Phone Link</dt><dd id="phone-link">—</dd><dt>Tailscale</dt><dd id="tailscale">—</dd></dl></article>
+      <article><h2>Audio path</h2><dl><dt>Call capture</dt><dd id="audio-state">—</dd><dt>Strategy</dt><dd id="audio-strategy">—</dd><dt>Earbuds</dt><dd>SELECT ON TARGET PC</dd><dt>Feedback guard</dt><dd>SEPARATE ROUTES REQUIRED</dd></dl></article>
+      <article><h2>Intelligence</h2><dl><dt>Whisper</dt><dd id="whisper">—</dd><dt>Device</dt><dd id="whisper-device">—</dd><dt>AnyModel</dt><dd id="anymodel">—</dd><dt>Local decision</dt><dd id="decision-source">—</dd></dl></article>
+      <article><h2>Android</h2><dl><dt>Connection</dt><dd id="android">—</dd><dt>Overlay / notifications</dt><dd id="permissions">—</dd><dt>Last alert delivery</dt><dd id="alert-latency">—</dd><dt>Protocol</dt><dd>v1 AUTHENTICATED</dd></dl></article>
+    </section>
+    <section class="grid work-grid">
+      <article class="panel transcript"><div class="section-title"><div><p class="eyebrow">LIVE CALLER CONTEXT</p><h2>Transcript</h2></div><span id="mode-chip">OFF</span></div><p id="transcript" class="transcript-text">No stable caller utterance yet.</p><form id="transcript-form"><label for="transcript-input">Inject stable transcript for software diagnostic</label><div class="input-row"><input id="transcript-input" maxlength="4000" placeholder="e.g. Tell me the SMS code from your bank"><button>Analyze</button></div></form></article>
+      <article class="panel"><p class="eyebrow">MEASURED PIPELINE</p><h2>Latency</h2><dl class="metrics"><dt>STT</dt><dd id="stt">—</dd><dt>Local decision</dt><dd id="decision-ms">—</dd><dt>Android ACK</dt><dd id="ack-ms">—</dd></dl><p class="small">Values appear only after real runtime events; SCUT never invents latency.</p></article>
+    </section>
+    <section class="actions" aria-label="Diagnostics and pairing">
+      <button data-action="pair" class="outline">Pair Android</button><button data-action="alerts/test">Test Android Alert</button><button data-action="diagnostics/network">Test Network</button><button data-action="diagnostics/earbuds">Test Earbud Playback</button><button data-action="diagnostics/capture" class="warn">Test Call Capture</button><button data-action="diagnostics/guarded-transcription" class="warn">Test Guarded Call Transcript</button><button data-action="diagnostics/predemo" class="outline">Pre-demo Check</button>
+    </section>
+    <section class="grid capture-grid" aria-label="Process loopback capture result"><article class="panel"><p class="eyebrow">PROCESS LOOPBACK</p><h2 id="capture-final">NOT TESTED</h2><pre id="capture-attempts">Use Test Call Capture to inspect current Phone Link processes.</pre><dl class="metrics"><dt>Selected</dt><dd id="capture-selected">—</dd><dt>PID</dt><dd id="capture-pid">—</dd><dt>RMS</dt><dd id="capture-rms">—</dd><dt>Peak</dt><dd id="capture-peak">—</dd></dl><button id="play-recording" disabled>Play Recording</button></article></section>
+    <section class="grid events-grid"><article class="panel"><p class="eyebrow">EVENTS</p><h2>Runtime log</h2><ol id="events" aria-live="polite"><li>Waiting for backend…</li></ol></article><article class="panel pairing"><p class="eyebrow">ANDROID PAIRING</p><h2>Scan or enter this payload</h2><pre id="pairing-payload">Select Pair Android.</pre><p class="small">The one-time token expires in five minutes. It is never stored in the portable project.</p></article></section>
+  </main>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js"></script>
+</body></html>
