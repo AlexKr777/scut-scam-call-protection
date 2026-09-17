@@ -1,0 +1,49 @@
+project_id = "scut-controller-receiver"
+
+[functions.enroll-device]
+verify_jwt = false
+
+[functions.claim-controller]
+verify_jwt = false
+
+[functions.update-device]
+verify_jwt = false
+
+[functions.controller-command]
+verify_jwt = false
+
+[functions.configure-system]
+verify_jwt = false
+
+[functions.exe-commands]
+verify_jwt = false
+
+[functions.exe-sync]
+verify_jwt = false
+
+[functions.incident-detail]
+verify_jwt = false
+
+[functions.send-fcm]
+  verify_jwt = false
+
+[functions.release-controller]
+verify_jwt = false
+
+[functions.controller-state]
+verify_jwt = false
+
+[functions.history-list]
+verify_jwt = false
+
+[functions.conversation-detail]
+verify_jwt = false
+
+[functions.conversation-delete]
+verify_jwt = false
+
+[functions.alerts-list]
+verify_jwt = false
+
+[functions.receivers-list]
+verify_jwt = false
