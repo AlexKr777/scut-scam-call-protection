@@ -1,0 +1,1 @@
+Place the verified faster-whisper-small CTranslate2 model directory here before packaging when venue bandwidth is a risk. `FIRST_RUN` copies it to `.local\models` only after it contains `model.bin`. This repository deliberately contains no model weights by default.

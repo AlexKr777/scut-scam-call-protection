@@ -1,0 +1,6 @@
+# Isolated supervised-encoder experiment only; not required by production SCUT.
+torch==2.14.0
+transformers==5.16.1
+safetensors==0.8.0
+scikit-learn==1.9.0
+einops==0.8.2

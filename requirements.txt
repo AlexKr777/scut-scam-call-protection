@@ -1,0 +1,8 @@
+# Public Python dependencies for development and test runs.
+# Model weights, CUDA runtime files, and packaged Python assets are provisioned separately.
+numpy>=2,<3
+scikit-learn>=1.7,<2
+torch>=2
+transformers>=4,<6
+faster-whisper>=1,<2
+ctranslate2>=4,<5
