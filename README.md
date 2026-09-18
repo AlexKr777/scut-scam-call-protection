@@ -113,15 +113,6 @@ npm test
 Android validation requires a locally configured Android SDK and is not assumed by the repository alone.
 Some deeper audio and model-validation suites additionally require local fixture data and model assets that are intentionally excluded from Git.
 
-## Screenshots to Add
-
-- Windows desktop control-center UI.
-- Android companion UI.
-- A representative risk result.
-- A redacted transcript/analysis example.
-- Settings and local-runtime status.
-- The architecture/data-flow view.
-
 ## Technical Highlights
 
 - Multi-platform coordination across Python, Electron, Android, and Supabase.
