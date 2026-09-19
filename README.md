@@ -103,6 +103,8 @@ Model weights, downloaded Whisper assets, packaged Python runtimes, generated ON
 ## Testing
 
 ```powershell
+# Self-contained offline Python suite. The summary reports three skipped
+# local-asset integrations when their opt-in flags are not enabled.
 python -m unittest discover -s tests -v
 
 Set-Location desktop
@@ -111,16 +113,23 @@ npm test
 ```
 
 Android validation requires a locally configured Android SDK and is not assumed by the repository alone.
-Some deeper audio and model-validation suites additionally require local fixture data and model assets that are intentionally excluded from Git.
+Three deeper validation checks require local assets that are intentionally excluded from Git. A skip in the default suite means the corresponding integration was not run; it is not a pass.
 
-## Screenshots to Add
+To run the immutable-corpus integrations, provision files with the hashes enforced by `scripts/championship_common.py`, then opt in explicitly:
 
-- Windows desktop control-center UI.
-- Android companion UI.
-- A representative risk result.
-- A redacted transcript/analysis example.
-- Settings and local-runtime status.
-- The architecture/data-flow view.
+```powershell
+$env:SCUT_RUN_CORPUS_INTEGRATION_TESTS = "1"
+python -m unittest tests.test_championship_common.ChampionshipCommonTests.test_integrity_accepts_the_two_allowed_immutable_sources tests.test_championship_common.ChampionshipCommonTests.test_loader_emits_only_train_and_validation_without_group_overlap -v
+```
+
+Required paths are `experiments/semantic_corpus_v3.json`, `experiments/semantic_training_extension_v1.json`, and `reports/scut_semantic_brain_v2/fresh_holdout_blueprint.json`.
+
+To run the downloaded NLI-model integration, provision `.local/models/mdeberta-v3-base-mnli-xnli/config.json`, `tokenizer.json`, and `model_quantized.onnx`, then opt in explicitly:
+
+```powershell
+$env:SCUT_RUN_NLI_INTEGRATION_TESTS = "1"
+python -m unittest tests.test_neural_nli.LocalNliRuntimeTests.test_downloaded_model_maps_known_entailment_contradiction_and_neutral -v
+```
 
 ## Technical Highlights
 

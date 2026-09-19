@@ -1,4 +1,14 @@
+import os
 import unittest
+from pathlib import Path
+
+
+MODEL_ROOT = Path(__file__).resolve().parents[1] / ".local" / "models" / "mdeberta-v3-base-mnli-xnli"
+RUN_NLI_INTEGRATION_TESTS = os.environ.get("SCUT_RUN_NLI_INTEGRATION_TESTS") == "1"
+NLI_INTEGRATION_REQUIREMENT = (
+    "integration test: set SCUT_RUN_NLI_INTEGRATION_TESTS=1 and provision "
+    ".local/models/mdeberta-v3-base-mnli-xnli/{config.json,tokenizer.json,model_quantized.onnx}"
+)
 
 
 class LocalNliRuntimeTests(unittest.TestCase):
@@ -14,11 +24,10 @@ class LocalNliRuntimeTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             label_mapping_from_config({"id2label": {"0": "LABEL_0"}})
 
+    @unittest.skipUnless(RUN_NLI_INTEGRATION_TESTS, NLI_INTEGRATION_REQUIREMENT)
     def test_downloaded_model_maps_known_entailment_contradiction_and_neutral(self):
-        from pathlib import Path
         from backend.neural_nli import LocalNliRuntime, NliLabel
-        root=Path(__file__).resolve().parents[1]/".local"/"models"/"mdeberta-v3-base-mnli-xnli"
-        runtime=LocalNliRuntime(root)
+        runtime=LocalNliRuntime(MODEL_ROOT)
         results=runtime.verify_pairs([
             ("A person is reading a book.", "A person is reading."),
             ("A person is reading a book.", "Nobody is reading."),

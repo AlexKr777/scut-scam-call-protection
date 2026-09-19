@@ -164,34 +164,39 @@ class ServiceTests(unittest.TestCase):
                 {"processName": "CrossDeviceService.exe", "pid": 103, "package": "MicrosoftWindows.CrossDevice", "packageFullName": "cross", "executable": "cross.exe"}]
 
     def _capture(self, results):
-        diagnostic_dir = __import__("pathlib").Path(self.tmp.name) / "diagnostics"
+        temporary_root = __import__("pathlib").Path(self.tmp.name)
+        diagnostic_dir = temporary_root / "diagnostics"
+        native_root = temporary_root / "native"
+        helper_path = native_root / "windows-audio" / "scut-process-loopback.exe"
+        helper_path.parent.mkdir(parents=True, exist_ok=True)
+        helper_path.write_bytes(b"test-only helper placeholder")
         def helper(_binary, candidate, wav, _seconds):
             result = results[candidate["pid"]].copy()
             if result.get("signal"):
                 wav.parent.mkdir(parents=True, exist_ok=True); wav.write_bytes(b"RIFF" + b"x" * 64)
             return result
-        return patch("backend.services.DIAGNOSTICS", diagnostic_dir), patch("backend.services.discover_phone_link_candidates", return_value=self._candidates()), patch("backend.services.invoke_native_process_loopback", side_effect=helper)
+        return patch("backend.services.DIAGNOSTICS", diagnostic_dir), patch("backend.services.ROOT", native_root), patch("backend.services.discover_phone_link_candidates", return_value=self._candidates()), patch("backend.services.invoke_native_process_loopback", side_effect=helper)
 
     def test_capture_selects_second_candidate_and_promotes_wav(self):
         patches = self._capture({101: {"signal": False, "rms": 0, "peak": 0}, 102: {"signal": True, "sampleRate": 48000, "channels": 2, "samples": 100, "rms": 900, "peak": 1500}, 103: {"signal": True}})
-        with patches[0], patches[1], patches[2]: result = self.service.diagnostic("capture")
+        with patches[0], patches[1], patches[2], patches[3]: result = self.service.diagnostic("capture")
         self.assertEqual("PASS", result["state"]); self.assertEqual(102, result["selected"]["pid"])
         self.assertEqual("NOT TESTED", result["attempts"][2]["state"])
         self.assertTrue((__import__("pathlib").Path(self.tmp.name) / "diagnostics" / "test_call.wav").is_file())
 
     def test_capture_all_silent_fails_even_if_generic_endpoint_would_have_signal(self):
         patches = self._capture({101: {"signal": False, "rms": 0, "peak": 0}, 102: {"signal": False, "rms": 0, "peak": 0}, 103: {"signal": False, "rms": 0, "peak": 0}})
-        with patches[0], patches[1], patches[2]: result = self.service.diagnostic("capture")
+        with patches[0], patches[1], patches[2], patches[3]: result = self.service.diagnostic("capture")
         self.assertEqual("FAIL", result["state"]); self.assertEqual("NO_PHONE_LINK_PROCESS_AUDIO", result["reason"])
 
     def test_helper_error_continues_to_next_candidate(self):
         patches = self._capture({101: {"error": "activation failed"}, 102: {"signal": True, "sampleRate": 48000, "channels": 2, "samples": 10, "rms": 100, "peak": 300}, 103: {}})
-        with patches[0], patches[1], patches[2]: result = self.service.diagnostic("capture")
+        with patches[0], patches[1], patches[2], patches[3]: result = self.service.diagnostic("capture")
         self.assertEqual("ERROR", result["attempts"][0]["state"]); self.assertEqual(102, result["selected"]["pid"])
 
     def test_each_capture_press_creates_one_new_test_id(self):
         patches = self._capture({101: {"signal": False}, 102: {"signal": False}, 103: {"signal": False}})
-        with patches[0], patches[1], patches[2]: first = self.service.diagnostic("capture"); second = self.service.diagnostic("capture")
+        with patches[0], patches[1], patches[2], patches[3]: first = self.service.diagnostic("capture"); second = self.service.diagnostic("capture")
         self.assertNotEqual(first["testId"], second["testId"])
 
     def test_guarded_transcription_requires_test_mode(self):
