@@ -15,9 +15,16 @@ from scripts.championship_common import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
+RUN_CORPUS_INTEGRATION_TESTS = os.environ.get("SCUT_RUN_CORPUS_INTEGRATION_TESTS") == "1"
+CORPUS_INTEGRATION_REQUIREMENT = (
+    "integration test: set SCUT_RUN_CORPUS_INTEGRATION_TESTS=1 and provision "
+    "experiments/semantic_corpus_v3.json, experiments/semantic_training_extension_v1.json, "
+    "and reports/scut_semantic_brain_v2/fresh_holdout_blueprint.json with the expected hashes"
+)
 
 
 class ChampionshipCommonTests(unittest.TestCase):
+    @unittest.skipUnless(RUN_CORPUS_INTEGRATION_TESTS, CORPUS_INTEGRATION_REQUIREMENT)
     def test_integrity_accepts_the_two_allowed_immutable_sources(self):
         observed = assert_integrity(ROOT)
 
@@ -48,6 +55,7 @@ class ChampionshipCommonTests(unittest.TestCase):
                 else:
                     os.environ[key] = value
 
+    @unittest.skipUnless(RUN_CORPUS_INTEGRATION_TESTS, CORPUS_INTEGRATION_REQUIREMENT)
     def test_loader_emits_only_train_and_validation_without_group_overlap(self):
         train, validation, labels, lineage = load_train_validation_records(ROOT)
 

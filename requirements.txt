@@ -6,3 +6,4 @@ torch>=2
 transformers>=4,<6
 faster-whisper>=1,<2
 ctranslate2>=4,<5
+psutil>=7,<8
